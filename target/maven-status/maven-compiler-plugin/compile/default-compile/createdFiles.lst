@@ -1,6 +1,7 @@
 com\portfolio\pokedex\controller\PokemonController.class
 com\portfolio\pokedex\exception\GlobalExceptionHandler.class
 com\portfolio\pokedex\service\PokemonService.class
+com\portfolio\pokedex\config\CorsConfig.class
 com\portfolio\pokedex\controller\FavoriteController.class
 com\portfolio\pokedex\model\PokemonSummary.class
 com\portfolio\pokedex\PokedexApplication.class

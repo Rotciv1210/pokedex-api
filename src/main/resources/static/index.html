@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pokedex API</title>
+  <link rel="icon" href="/favicon.ico" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -18,6 +19,7 @@
       <button class="nav-btn" data-section="favorites">Favoritos</button>
       <button class="nav-btn" data-section="teams">Equipos</button>
       <button class="nav-btn" data-section="compare">Comparar</button>
+      <button class="nav-btn" data-section="battle">Batalla</button>
     </nav>
   </header>
 
@@ -65,6 +67,81 @@
       <button id="compare-btn">Comparar</button>
     </div>
     <div id="compare-result"></div>
+  </section>
+
+  <!-- BATTLE -->
+  <section id="battle" class="section">
+
+    <!-- IDLE -->
+    <div id="b-idle" class="b-screen">
+      <div class="b-idle-box">
+        <div class="b-idle-icon">[ VS ]</div>
+        <h2>Modo Batalla</h2>
+        <p>Elige tu equipo de 6 Pokémon uno a uno.<br/>El equipo rival permanecerá oculto hasta el combate.</p>
+        <button id="b-start-btn" class="b-btn-red">Comenzar</button>
+      </div>
+    </div>
+
+    <!-- PICKING -->
+    <div id="b-picking" class="b-screen hidden">
+      <div class="b-pick-header">
+        <span id="b-pick-label">Elige tu Pokémon 1/6</span>
+        <div class="b-team-preview" id="b-team-preview"></div>
+      </div>
+      <div class="b-pick-card" id="b-pick-card">
+        <div class="loading"><div class="spinner"></div>Sorteando...</div>
+      </div>
+      <div class="b-pick-actions">
+        <button id="b-reroll-pick-btn" class="b-btn-gray">Rerollear</button>
+        <button id="b-keep-btn" class="b-btn-green">Elegir este</button>
+      </div>
+    </div>
+
+    <!-- BATTLE -->
+    <div id="b-fighting" class="b-screen hidden">
+      <div class="b-hud">
+        <div class="b-hud-side">
+          <div class="b-hud-label">Tu Pokémon</div>
+          <div id="b-active-player" class="b-active-slot"></div>
+          <div class="b-bench-label">Banco: <span id="b-bench-count"></span></div>
+        </div>
+        <div class="b-hud-center">
+          <div class="b-streak" id="b-streak-display"></div>
+          <div class="b-vs-anim">VS</div>
+          <div id="b-battle-log" class="b-log"></div>
+        </div>
+        <div class="b-hud-side b-hud-right">
+          <div class="b-hud-label">Rival</div>
+          <div id="b-active-enemy" class="b-active-slot b-hidden-slot">
+            <div class="b-mystery">?</div>
+            <div class="b-mystery-txt">???</div>
+          </div>
+          <div class="b-bench-label">Derrotados: <span id="b-enemy-defeated"></span></div>
+        </div>
+      </div>
+
+      <div id="b-fight-actions" class="b-actions">
+        <button id="b-fight-now-btn" class="b-btn-red">Combatir</button>
+      </div>
+
+      <div id="b-switch-actions" class="b-actions hidden">
+        <p class="b-switch-label">¿Continúas con <strong id="b-current-name"></strong> o cambias?</p>
+        <button id="b-keep-fighter-btn" class="b-btn-green">Seguir con este</button>
+        <button id="b-switch-btn" class="b-btn-gray">Cambiar Pokemon</button>
+      </div>
+
+      <div id="b-bench-picker" class="b-bench-picker hidden">
+        <p class="b-switch-label">Elige tu próximo Pokémon:</p>
+        <div id="b-bench-grid" class="b-bench-grid"></div>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="b-result" class="b-screen hidden">
+      <div class="b-result-box" id="b-result-box"></div>
+      <button id="b-rematch-btn" class="b-btn-red" style="display:none"></button>
+    </div>
+
   </section>
 
   <!-- POKEMON DETAIL MODAL -->
