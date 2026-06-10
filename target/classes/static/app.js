@@ -301,12 +301,24 @@ document.getElementById('compare-btn').addEventListener('click', async () => {
 });
 
 // ── Battle ───────────────────────────────────────────────────
+let battleTimers = [];
+function bSetTimeout(fn, ms) {
+  const id = setTimeout(fn, ms);
+  battleTimers.push(id);
+  return id;
+}
+function bClearTimers() {
+  battleTimers.forEach(clearTimeout);
+  battleTimers = [];
+}
+
 const BS = {
   phase: 'idle',
   playerTeam: [],
   currentPick: null,
   pickIndex: 0,        pickRerolls: 2,
 
+  enemyTeam: [],
   enemyQueue: [],
   activePlayer: null,
   activeEnemy: null,
@@ -321,6 +333,7 @@ const BS = {
   gauntletRound: 1,
   gauntletTotalKills: 0,
   gauntletRoundsWon: 0,
+  gauntletMaxStreak: 0,
 };
 
 const $ = id => document.getElementById(id);
@@ -367,12 +380,13 @@ function bRenderTeamPreview() {
 }
 
 async function bStartPicking() {
+  bClearTimers();
   Object.assign(BS, {
     phase:'picking', playerTeam:[], currentPick:null, pickIndex:0, pickRerolls:2,
-    enemyQueue:[], activePlayer:null, activeEnemy:null,
+    enemyTeam:[], enemyQueue:[], activePlayer:null, activeEnemy:null,
     playerBench:[], playerDefeated:[], enemyDefeated:[],
     streak:0, maxStreak:0, wins:0, losses:0,
-    gauntletRound:1, gauntletTotalKills:0, gauntletRoundsWon:0,
+    gauntletRound:1, gauntletTotalKills:0, gauntletRoundsWon:0, gauntletMaxStreak:0,
   });
   bShowScreen('b-picking');
   bRenderTeamPreview();
@@ -418,7 +432,7 @@ function bActiveSlotHTML(p) {
 
 function bUpdateStreak() {
   const el = $('b-streak-display');
-  el.textContent = `Racha: ${BS.streak}`;
+  el.textContent = `Racha: ${BS.streak}  |  Derrotados: ${BS.gauntletTotalKills + BS.enemyDefeated.length}`;
   el.className = 'b-streak' + (BS.streak >= 3 ? ' hot' : '');
 }
 
@@ -427,8 +441,9 @@ function bLog(msg) { $('b-battle-log').innerHTML = msg; }
 async function bStartFighting() {
   BS.phase = 'fighting';
   const enemy = await fetch(`${API}/api/pokemon/random?count=6`).then(r => r.json());
-  BS.enemyQueue    = [...enemy];
-  BS.playerBench   = [...BS.playerTeam];
+  BS.enemyTeam  = [...enemy];
+  BS.enemyQueue = [...enemy];
+  BS.playerBench = [...BS.playerTeam];
   bShowScreen('b-fighting');
   bUpdateStreak();
   bShowActions('fight');
@@ -475,12 +490,17 @@ window.bSelectBenchPokemon = function(id) {
 
   bShowActions('none');
   bLog(`${BS.activePlayer.name} vs ${BS.activeEnemy.name}`);
-  setTimeout(bDoFight, 800);
+  bSetTimeout(bDoFight, 800);
 };
 
 $('b-fight-now-btn').addEventListener('click', bDoFight);
+$('b-surrender-btn').addEventListener('click', () => {
+  BS.playerBench = [];
+  bEndBattle();
+});
 
 function bDoFight() {
+  if (!BS.activePlayer || !BS.activeEnemy) return;
   // reset borders at the start of each new fight
   $('b-active-player').className = 'b-active-slot';
   $('b-active-enemy').className  = 'b-active-slot';
@@ -493,6 +513,7 @@ function bDoFight() {
     BS.wins++;
     BS.streak++;
     if (BS.streak > BS.maxStreak) BS.maxStreak = BS.streak;
+    if (BS.streak > BS.gauntletMaxStreak) BS.gauntletMaxStreak = BS.streak;
     BS.enemyDefeated.push(BS.activeEnemy);
     $('b-active-player').className = 'b-active-slot winner';
     $('b-active-enemy').className  = 'b-active-slot loser';
@@ -500,14 +521,14 @@ function bDoFight() {
     bLog(`${BS.activePlayer.name} gano (${pStats} vs ${eStats})`);
     bUpdateStreak();
 
-    if (BS.enemyQueue.length === 0) { setTimeout(bEndBattle, 900); return; }
+    if (BS.enemyQueue.length === 0) { bSetTimeout(bEndBattle, 900); return; }
 
     BS.activeEnemy = null;
     $('b-current-name').textContent = BS.activePlayer.name;
     if (BS.playerBench.length === 0) {
-      setTimeout(() => bContinueWithSame(), 700);
+      bSetTimeout(() => bContinueWithSame(), 700);
     } else {
-      setTimeout(() => bShowActions('switch'), 600);
+      bSetTimeout(() => bShowActions('switch'), 600);
     }
   } else {
     BS.losses++;
@@ -518,8 +539,8 @@ function bDoFight() {
     bLog(`${BS.activePlayer.name} fue derrotado (${pStats} vs ${eStats})`);
     bUpdateStreak();
 
-    if (BS.playerBench.length === 0) { setTimeout(bEndBattle, 900); return; }
-    setTimeout(() => bShowBenchPicker(false), 700);
+    if (BS.playerBench.length === 0) { bSetTimeout(bEndBattle, 900); return; }
+    bSetTimeout(() => bShowBenchPicker(false), 700);
   }
 }
 
@@ -570,12 +591,12 @@ function bEndBattle() {
       <div class="brs-name">${p.name}</div>
     </div>`).join('');
 
-  const allEnemies = [...BS.enemyDefeated, ...BS.enemyQueue];
+  const allEnemies = BS.enemyTeam;
 
   $('b-result-box').innerHTML = `
     <div class="br-round-badge">Ronda ${BS.gauntletRound}</div>
     <div class="br-title" style="color:${color}">${title}</div>
-    <div class="br-sub">Racha maxima: ${BS.maxStreak} · Victorias: ${BS.wins} · Derrotas: ${BS.losses}</div>
+    <div class="br-sub">Racha maxima: ${BS.gauntletMaxStreak} · Victorias: ${BS.wins} · Derrotas: ${BS.losses}</div>
     <div class="b-stats-row">
       <div class="b-stat-item"><div class="bsi-val" style="color:#27ae60">${BS.enemyDefeated.length}</div><div class="bsi-lbl">Rivales derrotados</div></div>
       <div class="b-stat-item"><div class="bsi-val" style="color:var(--red)">${BS.playerDefeated.length}</div><div class="bsi-lbl">Tus caidos</div></div>
@@ -599,16 +620,17 @@ function bEndBattle() {
 }
 
 async function bNextGauntletRound() {
+  bClearTimers();
   BS.gauntletRound++;
   const survivors = BS.playerTeam.filter(p => !BS.playerDefeated.find(d => d.id === p.id));
 
   // reset round state keeping survivors and gauntlet totals
   Object.assign(BS, {
     phase: 'fighting',
-    enemyQueue: [], activePlayer: null, activeEnemy: null,
+    enemyTeam: [], enemyQueue: [], activePlayer: null, activeEnemy: null,
     playerBench: [...survivors],
     playerDefeated: [], enemyDefeated: [],
-    streak: 0, maxStreak: 0, wins: 0, losses: 0,
+    wins: 0, losses: 0,
   });
 
   bShowScreen('b-fighting');
@@ -623,6 +645,7 @@ async function bNextGauntletRound() {
   bLog(`Ronda ${BS.gauntletRound} — elige tu Pokemon`);
 
   const enemy = await fetch(`${API}/api/pokemon/random?count=6`).then(r => r.json());
+  BS.enemyTeam  = [...enemy];
   BS.enemyQueue = [...enemy];
   bShowBenchPicker(true);
 }

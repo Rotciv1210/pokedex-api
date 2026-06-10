@@ -479,6 +479,10 @@ window.bSelectBenchPokemon = function(id) {
 };
 
 $('b-fight-now-btn').addEventListener('click', bDoFight);
+$('b-surrender-btn').addEventListener('click', () => {
+  BS.playerBench = [];
+  bEndBattle();
+});
 
 function bDoFight() {
   // reset borders at the start of each new fight
@@ -570,7 +574,8 @@ function bEndBattle() {
       <div class="brs-name">${p.name}</div>
     </div>`).join('');
 
-  const allEnemies = [...BS.enemyDefeated, ...BS.enemyQueue];
+  const activeNotCounted = BS.activeEnemy && !BS.enemyDefeated.find(d => d.id === BS.activeEnemy.id) ? [BS.activeEnemy] : [];
+  const allEnemies = [...BS.enemyDefeated, ...activeNotCounted, ...BS.enemyQueue];
 
   $('b-result-box').innerHTML = `
     <div class="br-round-badge">Ronda ${BS.gauntletRound}</div>
