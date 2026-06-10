@@ -1,0 +1,16 @@
+com\portfolio\pokedex\controller\PokemonController.class
+com\portfolio\pokedex\exception\GlobalExceptionHandler.class
+com\portfolio\pokedex\service\PokemonService.class
+com\portfolio\pokedex\controller\FavoriteController.class
+com\portfolio\pokedex\model\PokemonSummary.class
+com\portfolio\pokedex\PokedexApplication.class
+com\portfolio\pokedex\service\FavoriteService.class
+com\portfolio\pokedex\config\OpenApiConfig.class
+com\portfolio\pokedex\controller\TeamController.class
+com\portfolio\pokedex\model\CompareResult.class
+com\portfolio\pokedex\model\PokemonDetail.class
+com\portfolio\pokedex\service\TeamService.class
+com\portfolio\pokedex\config\WebClientConfig.class
+com\portfolio\pokedex\model\PokemonDetail$StatEntry.class
+com\portfolio\pokedex\model\Team.class
+com\portfolio\pokedex\config\CacheConfig.class

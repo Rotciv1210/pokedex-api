@@ -1,0 +1,15 @@
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\config\CacheConfig.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\config\OpenApiConfig.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\config\WebClientConfig.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\controller\FavoriteController.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\controller\PokemonController.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\controller\TeamController.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\exception\GlobalExceptionHandler.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\model\CompareResult.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\model\PokemonDetail.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\model\PokemonSummary.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\model\Team.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\PokedexApplication.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\service\FavoriteService.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\service\PokemonService.java
+C:\Users\victo\Desktop\Spring\src\main\java\com\portfolio\pokedex\service\TeamService.java
